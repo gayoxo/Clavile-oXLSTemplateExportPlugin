@@ -83,7 +83,7 @@ public class SaveRemoteCollectionXLSTemp extends SaveCollection {
 	 */
 	@Override
 	public String getName() {
-		return "XLS Clavy Template";
+		return "XLS como plantilla de carga/update de datos";
 	}
 	
 	
