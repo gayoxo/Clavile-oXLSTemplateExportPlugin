@@ -262,7 +262,18 @@ public class CollectionXLSTemp {
 							}
 	            			Value=SB.toString();
 	            			}
-	            			
+	            		else if (temp.size()>0){
+	            			CompleteElement completeElement=temp.get(0);
+	            			if (completeElement instanceof CompleteTextElement)
+		            			Value=(((CompleteTextElement)completeElement).getValue());
+							else if (completeElement instanceof CompleteLinkElement)
+		            			Value=Long.toString((((CompleteLinkElement)completeElement).getValue().getClavilenoid()));
+							else if (completeElement instanceof CompleteResourceElementURL)
+		            			Value=(((CompleteResourceElementURL)completeElement).getValue());
+							else if (completeElement instanceof CompleteResourceElementFile)
+		            			Value=(((CompleteResourceElementFile)completeElement).getValue().getPath());
+	            		}
+
 	            		
 	            		}
 	            		}
