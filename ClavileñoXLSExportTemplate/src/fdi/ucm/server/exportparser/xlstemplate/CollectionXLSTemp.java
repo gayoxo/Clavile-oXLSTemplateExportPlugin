@@ -133,7 +133,7 @@ public class CollectionXLSTemp {
 	        		
 	        		String Value = "";
 	            	if (j==0)
-	            		Value="Clavy Document Id ( ADD NEGATIVE NUMBERS FOR NEW DOCS ) ";
+	            		Value="Column Clavy Document Id ( ADD NEGATIVE NUMBERS FOR NEW DOCS ) ";
 	            	else 
 	            		if (j==1)
 	            			Value="Description";
@@ -160,7 +160,7 @@ public class CollectionXLSTemp {
 	            	else
 	            	if (j==0)
 	            	{
-	            		hoja.setColumnWidth(j, 6375);
+	            		hoja.setColumnWidth(j, 15750);
 	            	}
 	            	else
 	            	if (j==1)
@@ -177,7 +177,7 @@ public class CollectionXLSTemp {
 	        		
 	        		String Value = "";
 	        		if (j==0)
-	            		Value="Clavy Type Id ( DO NOT MODIFY THIS ROW )";
+	            		Value="Row Clavy Type Id ( DO NOT MODIFY THIS ROW )";
 	            	else 
 	            		if (j==1)
 	            			Value=" -- ";
