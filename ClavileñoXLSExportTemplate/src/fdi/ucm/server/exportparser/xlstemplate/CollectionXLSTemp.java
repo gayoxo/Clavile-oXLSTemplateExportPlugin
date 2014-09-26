@@ -133,7 +133,7 @@ public class CollectionXLSTemp {
 	        		
 	        		String Value = "";
 	            	if (j==0)
-	            		Value="Clavy Document Id ( ADD LETTERS FOR NEW DOCS ) ";
+	            		Value="Clavy Document Id ( ADD NEGATIVE NUMBERS FOR NEW DOCS ) ";
 	            	else 
 	            		if (j==1)
 	            			Value="Description";
