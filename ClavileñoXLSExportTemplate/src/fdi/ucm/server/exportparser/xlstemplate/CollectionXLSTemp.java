@@ -65,9 +65,40 @@ public class CollectionXLSTemp {
         HashMap<Long, Integer> clave=new HashMap<Long, Integer>();	
         
 //        Sheet hoja;
+        HashMap<CompleteGrammar, Sheet> TablaAmbitos=new HashMap<CompleteGrammar, Sheet>();
+        HashMap<CompleteGrammar, Sheet> TablaDatos=new HashMap<CompleteGrammar, Sheet>();
+        HashMap<CompleteGrammar, Integer> TablaNoname=new HashMap<CompleteGrammar, Integer>();
+
+        int Value=0;
         
         for (CompleteGrammar row : salvar.getMetamodelGrammar()) {
-			processGrammar(libro,row,clave,cL,salvar.getEstructuras(),soloEstructura);
+        	   Sheet hoja;
+       		if (!row.getNombre().isEmpty())
+       	        	 hoja = libro.createSheet(row.getNombre());
+       	        else {
+       	        	hoja = libro.createSheet();
+       	        	TablaNoname.put(row, Value);
+       	        	Value++;
+       	        }
+       		TablaDatos.put(row, hoja);
+		}
+
+        for (CompleteGrammar row : salvar.getMetamodelGrammar()) {
+        	   Sheet hoja;
+        	   if (!row.getNombre().isEmpty())
+     	        	 hoja = libro.createSheet(row.getNombre()+"_Scopes");
+     	        else {
+     	        	Integer ValaNo=TablaNoname.get(row);
+     	        	hoja = libro.createSheet(ValaNo+"_Scopes");
+     	        }
+        	   TablaAmbitos.put(row, hoja);
+		}
+        
+        
+        for (CompleteGrammar row : salvar.getMetamodelGrammar()) {
+        	Sheet HojaDatos=TablaDatos.get(row);
+        	Sheet HojaAmbitos=TablaAmbitos.get(row);
+			processGrammar(libro,HojaDatos,HojaAmbitos,row,clave,cL,salvar.getEstructuras(),soloEstructura);
 		}
         
         
@@ -91,13 +122,11 @@ public class CollectionXLSTemp {
         
 	}
 	
-	  private static void processGrammar(Workbook libro, CompleteGrammar grammar,
+	
+
+	private static void processGrammar(Workbook libro, Sheet hojaDatos, Sheet hojaAmbitos, CompleteGrammar grammar,
 			HashMap<Long, Integer> clave, CompleteCollectionLog cL, List<CompleteDocuments> list, boolean soloEstructura) {
 		  
-		   Sheet hoja;
-		if (!grammar.getNombre().isEmpty())
-	        	 hoja = libro.createSheet(grammar.getNombre());
-	        else hoja = libro.createSheet();
 	  
 	        
 	        List<CompleteElementType> ListaElementos=generaLista(grammar);
@@ -124,33 +153,34 @@ public class CollectionXLSTemp {
 	       	
 	        
 	        for (int i = 0; i < 2; i++) {
-	        	Row fila = hoja.createRow(row);
+	        	Row filaDatos = hojaDatos.createRow(row);
+	        	Row filaAmbitos = hojaAmbitos.createRow(row);
 	        	row++;
 	        	
 	        	if (i==0)
 	        	{
 	        	for (int j = 0; j < columnsMax+2; j++) {
 	        		
-	        		String Value = "";
+	        		String ValueDatos = "";
 	            	if (j==0)
-	            		Value="Column Clavy Document Id ( ADD NEGATIVE NUMBERS FOR NEW DOCS ) ";
+	            		ValueDatos="Column Clavy Document Id ( ADD NEGATIVE NUMBERS FOR NEW DOCS ) ";
 	            	else 
 	            		if (j==1)
-	            			Value="Description";
+	            			ValueDatos="Description";
 	            		else
 	            		{
 	            		CompleteElementType TmpEle = ListaElementos.get(j-2);
-	            		Value=pathFather(TmpEle);
+	            		ValueDatos=pathFather(TmpEle);
 	            		}
 	
 	            	
-	            	if (Value.length()>=32767)
+	            	if (ValueDatos.length()>=32767)
 	            	{
-	            		cL.getLogLines().add("Tamaño de Texto en Valor del path del Tipo " + Value + " excesivo, no debe superar los 32767 caracteres, columna recortada");
-	            		Value.substring(0, 32766);
+	            		cL.getLogLines().add("Tamaño de Texto en Valor del path del Tipo " + ValueDatos + " excesivo, no debe superar los 32767 caracteres, columna recortada");
+	            		ValueDatos.substring(0, 32766);
 	            	}
-	            		Cell celda = fila.createCell(j);
-	            		
+	            		Cell celdaDatos = filaDatos.createCell(j);
+	            		Cell celdaAmbitos = filaAmbitos.createCell(j);
 	            		
 	            	if (j>1)
 	            		{
@@ -160,42 +190,46 @@ public class CollectionXLSTemp {
 	            	else
 	            	if (j==0)
 	            	{
-	            		hoja.setColumnWidth(j, 15750);
+	            		hojaDatos.setColumnWidth(j, 15750);
 	            	}
 	            	else
 	            	if (j==1)
 		            {
-		            	hoja.setColumnWidth(j, 12750);
+	            		hojaDatos.setColumnWidth(j, 12750);
 		            }
 	            	
-	            	celda.setCellValue(Value);
+	            	celdaDatos.setCellValue(ValueDatos);
+	            	
+	            	if (j==0)
+	            		celdaAmbitos.setCellValue("Scopes Values for import/export, be carefull if you modify this");
 	            
 	           }
 			}else if (i==1)
         	{
         		for (int j = 0; j < columnsMax+2; j++) {
 	        		
-	        		String Value = "";
+	        		String ValueDatos = "";
 	        		if (j==0)
-	            		Value="Row Clavy Type Id ( DO NOT MODIFY THIS ROW )";
+	            		ValueDatos="Row Clavy Type Id ( DO NOT MODIFY THIS ROW )";
 	            	else 
 	            		if (j==1)
-	            			Value=Long.toString(grammar.getClavilenoid());
+	            			ValueDatos=Long.toString(grammar.getClavilenoid());
 	            		else
 	            		{
 	            		CompleteElementType TmpEle = ListaElementos.get(j-2);
-	            		Value=Long.toString(TmpEle.getClavilenoid());
+	            		ValueDatos=Long.toString(TmpEle.getClavilenoid());
 	            		}
 	
 	            	
-	        		if (Value.length()>=32767)
+	        		if (ValueDatos.length()>=32767)
 	            	{
-	            		cL.getLogLines().add("Tamaño de Texto en Valor del path del Tipo " + Value + " excesivo, no debe superar los 32767 caracteres, columna recortada");
-	            		Value.substring(0, 32766);
+	            		cL.getLogLines().add("Tamaño de Texto en Valor del path del Tipo " + ValueDatos + " excesivo, no debe superar los 32767 caracteres, columna recortada");
+	            		ValueDatos.substring(0, 32766);
 	            	}
-	            		Cell celda = fila.createCell(j);
+	            		Cell celdaDatos = filaDatos.createCell(j);
+	            		filaAmbitos.createCell(j);
 	            	
-	            	celda.setCellValue(Value);
+	            	celdaDatos.setCellValue(ValueDatos);
 	            
 	           }
         	}
@@ -208,7 +242,8 @@ public class CollectionXLSTemp {
 	        /*Hacemos un ciclo para inicializar los valores de filas de celdas*/
 	        for(int f=0;f<ListaDocumentos.size();f++){
 	            /*La clase Row nos permitirá crear las filas*/
-	            Row fila = hoja.createRow(row);
+	            Row filaDatos = hojaDatos.createRow(row);
+	            Row filaAmbitos = hojaAmbitos.createRow(row);
 	            row++;
 
 	            CompleteDocuments Doc=ListaDocumentos.get(f);
@@ -233,17 +268,19 @@ public class CollectionXLSTemp {
 	            /*Cada fila tendrá celdas de datos*/
 	            for(int c=0;c<columnsMax+2;c++){
 	            	
-	            	String Value = "";
+	            	String ValueDatos = "";
+	            	String ValueAmbitos = "";
 	            	if (c==0)
-	            		Value=Long.toString(Doc.getClavilenoid());
+	            		ValueDatos=Long.toString(Doc.getClavilenoid());
 	            	else if (c==1)
-	            		Value=Doc.getDescriptionText();
+	            		ValueDatos=Doc.getDescriptionText();
 	            	else
 	            		{
 	            		ArrayList<CompleteElement> temp = ListaClave.get(c-2);
 	            		if (temp!=null)
 	            		{
 	            			
+	            		//Calculo Value normal	
 	            		if (temp.size()>1)
 	            			{
 	            			StringBuffer SB=new StringBuffer();
@@ -260,36 +297,65 @@ public class CollectionXLSTemp {
 									SB.append(((CompleteResourceElementFile)completeElement).getValue().getPath());
 								SB.append("}");
 							}
-	            			Value=SB.toString();
+	            			ValueDatos=SB.toString();
 	            			}
 	            		else if (temp.size()>0){
 	            			CompleteElement completeElement=temp.get(0);
 	            			if (completeElement instanceof CompleteTextElement)
-		            			Value=(((CompleteTextElement)completeElement).getValue());
+		            			ValueDatos=(((CompleteTextElement)completeElement).getValue());
 							else if (completeElement instanceof CompleteLinkElement)
-		            			Value=Long.toString((((CompleteLinkElement)completeElement).getValue().getClavilenoid()));
+							{
+								try {
+									ValueDatos=Long.toString((((CompleteLinkElement)completeElement).getValue().getClavilenoid()));
+								} catch (Exception e) {
+									ValueDatos="";
+								}
+		            			
+							}
 							else if (completeElement instanceof CompleteResourceElementURL)
-		            			Value=(((CompleteResourceElementURL)completeElement).getValue());
+		            			ValueDatos=(((CompleteResourceElementURL)completeElement).getValue());
 							else if (completeElement instanceof CompleteResourceElementFile)
-		            			Value=(((CompleteResourceElementFile)completeElement).getValue().getPath());
+		            			ValueDatos=(((CompleteResourceElementFile)completeElement).getValue().getPath());
 	            		}
 
+	            		//Calculo value ambitos
+	            		if (temp.size()>1)
+            			{
+            			StringBuffer SB=new StringBuffer();
+            			SB.append("Size: " +temp.size());
+            			for (CompleteElement completeElement : temp) {
+            				SB.append("{");
+            					SB.append(procesaAmbitos(completeElement.getAmbitos()));
+            				
+							SB.append("}");
+						}
+            			ValueAmbitos=SB.toString();
+            			}
+            		else if (temp.size()>0){
+            			CompleteElement completeElement=temp.get(0);
+            			ValueAmbitos=procesaAmbitos(completeElement.getAmbitos());
+					
+            		}
+	            		
+	            		
 	            		
 	            		}
 	            		}
 	
 	            	 
-	            	if (Value.length()>=32767)
+	            	if (ValueDatos.length()>=32767)
 	            	{
-	            		Value="";
-	            		cL.getLogLines().add("Tamaño de Texto en Valor en elemento " + Value + " excesivo, no debe superar los 32767 caracteres, columna recortada");
-	            		Value.substring(0, 32766);
+	            		ValueDatos="";
+	            		cL.getLogLines().add("Tamaño de Texto en Valor en elemento " + ValueDatos + " excesivo, no debe superar los 32767 caracteres, columna recortada");
+	            		ValueDatos.substring(0, 32766);
 	            	}
 	                /*Creamos la celda a partir de la fila actual*/
-	                Cell celda = fila.createCell(c);               	
-	                		 celda.setCellValue(Value);
+	                Cell celdaDatos = filaDatos.createCell(c);
+	                Cell celdaAmbitos = filaAmbitos.createCell(c);
+	                
+	                		 celdaDatos.setCellValue(ValueDatos);
+	                		 celdaAmbitos.setCellValue(ValueAmbitos);
 	                    /*Si no es la primera fila establecemos un valor*/
-	                	//32.767
 
 	                
 	            	}
@@ -303,6 +369,19 @@ public class CollectionXLSTemp {
 	       
 		
 	}
+
+	private static String procesaAmbitos(ArrayList<Integer> ambitos) {
+		StringBuffer SB=new StringBuffer();
+		for (Integer integer : ambitos) {
+				SB.append("{");
+					SB.append(integer);
+				
+				SB.append("}");
+			}
+		return SB.toString();
+	}
+
+
 
 	private static ArrayList<CompleteDocuments> generaDocs(
 			List<CompleteDocuments> list, CompleteGrammar grammar) {
