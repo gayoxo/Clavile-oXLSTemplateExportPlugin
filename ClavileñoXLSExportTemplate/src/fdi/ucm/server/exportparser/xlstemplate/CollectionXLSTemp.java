@@ -287,14 +287,7 @@ public class CollectionXLSTemp {
 	            			SB.append("Size: " +temp.size());
 	            			for (CompleteElement completeElement : temp) {
 	            				SB.append("{");
-								if (completeElement instanceof CompleteTextElement)
-									SB.append(((CompleteTextElement)completeElement).getValue());
-								else if (completeElement instanceof CompleteLinkElement)
-									SB.append(((CompleteLinkElement)completeElement).getValue().getClavilenoid());
-								else if (completeElement instanceof CompleteResourceElementURL)
-									SB.append(((CompleteResourceElementURL)completeElement).getValue());
-								else if (completeElement instanceof CompleteResourceElementFile)
-									SB.append(((CompleteResourceElementFile)completeElement).getValue().getPath());
+	            				SB.append(getValueFromElement(completeElement));
 								SB.append("}");
 							}
 	            			ValueDatos=SB.toString();
@@ -430,6 +423,22 @@ public class CollectionXLSTemp {
 		 return ListaElementos;
 	}
 
+	private static String getValueFromElement(CompleteElement completeElement) {
+		try {
+			if (completeElement instanceof CompleteTextElement)
+    			return (((CompleteTextElement)completeElement).getValue());
+			else if (completeElement instanceof CompleteLinkElement)
+				return Long.toString((((CompleteLinkElement)completeElement).getValue().getClavilenoid()));
+			else if (completeElement instanceof CompleteResourceElementURL)
+				return (((CompleteResourceElementURL)completeElement).getValue());
+			else if (completeElement instanceof CompleteResourceElementFile)
+				return (((CompleteResourceElementFile)completeElement).getValue().getPath());
+		} catch (Exception e) {
+			return "";
+		}
+		return "";
+	}
+	
 	public static void main(String[] args) throws Exception{
 		
 		int id=0;
