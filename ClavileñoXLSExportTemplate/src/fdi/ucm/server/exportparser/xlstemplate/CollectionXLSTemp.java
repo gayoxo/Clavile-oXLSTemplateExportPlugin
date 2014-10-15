@@ -202,7 +202,7 @@ public class CollectionXLSTemp {
 	            	
 	            	if (j==0)
 	            		celdaAmbitos.setCellValue("Scopes Values for import/export, be carefull if you modify this");
-	            
+	            	
 	           }
 			}else if (i==1)
         	{
@@ -227,11 +227,15 @@ public class CollectionXLSTemp {
 	            		ValueDatos.substring(0, 32766);
 	            	}
 	            		Cell celdaDatos = filaDatos.createCell(j);
-	            		filaAmbitos.createCell(j);
+	            		Cell celdaAmbitos=filaAmbitos.createCell(j);
 	            	
 	            	celdaDatos.setCellValue(ValueDatos);
-	            
+	            	
+	            	if (j==0)
+	            		celdaAmbitos.setCellValue("Scopes Row/Colum match with the named colum Row/colum value");
 	           }
+        		
+        		
         	}
 	        	
 	        }
