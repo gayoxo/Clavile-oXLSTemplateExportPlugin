@@ -71,26 +71,35 @@ public class CollectionXLSTemp {
 
         int Value=0;
         
+        
+        
         for (CompleteGrammar row : salvar.getMetamodelGrammar()) {
         	   Sheet hoja;
-       		if (!row.getNombre().isEmpty())
-       	        	 hoja = libro.createSheet(row.getNombre());
-       	        else {
-       	        	hoja = libro.createSheet();
-       	        	TablaNoname.put(row, Value);
-       	        	Value++;
-       	        }
+        	   
+        	   if (!row.getNombre().isEmpty())
+        	   	 {
+        				int indice = 0;
+        				String Nombreactual=row.getNombre();
+        				while (libro.getSheet(Nombreactual)!=null)
+        					{
+        					Nombreactual=row.getNombre()+indice;
+        					indice++;
+        					}
+        				hoja = libro.createSheet(Nombreactual);
+        	   	 }
+        	   else{
+        		   hoja = libro.createSheet();
+        		   TablaNoname.put(row, Value);
+      	        	Value++;
+        	   }
        		TablaDatos.put(row, hoja);
 		}
 
+        
         for (CompleteGrammar row : salvar.getMetamodelGrammar()) {
+        	Sheet hojaP = TablaDatos.get(row);
         	   Sheet hoja;
-        	   if (!row.getNombre().isEmpty())
-     	        	 hoja = libro.createSheet(row.getNombre()+"_Scopes");
-     	        else {
-     	        	Integer ValaNo=TablaNoname.get(row);
-     	        	hoja = libro.createSheet(ValaNo+"_Scopes");
-     	        }
+     	        	 hoja = libro.createSheet(hojaP.getSheetName()+"_Scopes");
         	   TablaAmbitos.put(row, hoja);
 		}
         
