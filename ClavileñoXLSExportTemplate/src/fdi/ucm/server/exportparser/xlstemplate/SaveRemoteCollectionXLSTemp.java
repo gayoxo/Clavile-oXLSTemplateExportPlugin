@@ -116,4 +116,10 @@ public class SaveRemoteCollectionXLSTemp extends SaveCollection {
 		return FileO;
 	}
 
+
+	@Override
+	public void SetlocalTemporalFolder(String TemporalPath) {
+		
+	}
+
 }
