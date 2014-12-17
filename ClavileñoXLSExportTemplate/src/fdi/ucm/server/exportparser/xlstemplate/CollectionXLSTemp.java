@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import fdi.ucm.server.modelComplete.collection.CompleteCollection;
-import fdi.ucm.server.modelComplete.collection.CompleteCollectionLog;
+import fdi.ucm.server.modelComplete.collection.CompleteLogAndUpdates;
 import fdi.ucm.server.modelComplete.collection.document.CompleteDocuments;
 import fdi.ucm.server.modelComplete.collection.document.CompleteElement;
 import fdi.ucm.server.modelComplete.collection.document.CompleteFile;
@@ -42,7 +42,7 @@ import fdi.ucm.server.modelComplete.collection.grammar.CompleteTextElementType;
 public class CollectionXLSTemp {
 
 
-	public static String processCompleteCollection(CompleteCollectionLog cL,
+	public static String processCompleteCollection(CompleteLogAndUpdates cL,
 			CompleteCollection salvar, boolean soloEstructura, String pathTemporalFiles) throws IOException {
 		
 		 /*La ruta donde se creará el archivo*/
@@ -134,7 +134,7 @@ public class CollectionXLSTemp {
 	
 
 	private static void processGrammar(Workbook libro, Sheet hojaDatos, Sheet hojaAmbitos, CompleteGrammar grammar,
-			HashMap<Long, Integer> clave, CompleteCollectionLog cL, List<CompleteDocuments> list, boolean soloEstructura) {
+			HashMap<Long, Integer> clave, CompleteLogAndUpdates cL, List<CompleteDocuments> list, boolean soloEstructura) {
 		  
 	  
 	        
@@ -543,7 +543,7 @@ public class CollectionXLSTemp {
 		 
 		  
 		  
-		  processCompleteCollection(new CompleteCollectionLog(), CC, false, System.getProperty("user.home"));
+		  processCompleteCollection(new CompleteLogAndUpdates(), CC, false, System.getProperty("user.home"));
 		  
 	    }
 
